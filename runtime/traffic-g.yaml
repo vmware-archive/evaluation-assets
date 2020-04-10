@@ -1,0 +1,127 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: service-list
+  namespace: octarine
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["list"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: octarine-service-list
+  namespace: octarine
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: service-list
+  namespace: octarine
+subjects:
+  - kind: ServiceAccount
+    name: octarine-service-list
+    namespace: octarine
+roleRef:
+  kind: Role
+  name: service-list
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svc1
+  namespace: octarine
+  labels:
+    app: svc1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: svc1
+  template:
+    metadata:
+      labels:
+        app: svc1
+    spec:
+      serviceAccountName: octarine-service-list
+      containers:
+        - name: server
+          image: octarinesec/trafficg:server
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+              name: httpport
+        - name: client
+          image: octarinesec/trafficg:client
+          imagePullPolicy: Always
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: octarine
+  name: svc1
+  labels:
+    app.kubernetes.io/selector: octarine_traffic_generator
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 5000
+  selector:
+    app: svc1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svc2
+  namespace: octarine
+  labels:
+    app: svc2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: svc2
+  template:
+    metadata:
+      labels:
+        app: svc2
+    spec:
+      serviceAccountName: octarine-service-list
+      containers:
+        - name: server
+          image: octarinesec/trafficg:server
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+              name: httpport
+        - name: client
+          image: octarinesec/trafficg:client
+          imagePullPolicy: Always
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc2
+  namespace: octarine
+  labels:
+    app.kubernetes.io/selector: octarine_traffic_generator
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 5000
+  selector:
+    app: svc2

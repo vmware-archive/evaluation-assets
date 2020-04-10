@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privileged-workload
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: privileged-workload
+  template:
+    metadata:
+      labels:
+        app: privileged-workload
+    spec:
+      containers:
+        - name: echo
+          image: busybox:latest
+          command:
+            - "sleep"
+            - "1000"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5001
+              name: httpport
+          securityContext:
+            privileged: true
