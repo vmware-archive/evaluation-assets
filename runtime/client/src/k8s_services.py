@@ -26,6 +26,5 @@ class Services():
             if inst.evaluate_service_name():
                 return None
             return inst
-        aa = map(get_svc_instance_from_results, self._get_k8s_services_for_namespace().items)
-        self.service_list = list(filter(None, aa))
+        self.service_list = list(filter(None, map(get_svc_instance_from_results, self._get_k8s_services_for_namespace().items)))
         return self
