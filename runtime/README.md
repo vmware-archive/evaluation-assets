@@ -1,6 +1,6 @@
 # Octarine Run-Time Assets
 
-Octarine is a cloud-native network security platform for the complete lifecycle of Kubernetes applications. It helps protect your cloud-native apps from build to runtime; with Ocatrine runtime you can easily apply L7 network policy, detect and block threats, and get alerted on anomalies in your cluster traffic.
+Octarine is a cloud-native network security platform for the complete lifecycle of Kubernetes applications. It helps protect your cloud-native apps from build to runtime. with Ocatrine Runtime you can easily apply L7 network policy, detect and block threats, and get alerted on anomalies in your cluster traffic.
 To help evaluate and test your runtime security, we developed a simple traffic generator we can use to help demonstrate the runtime value.
 
 ## How it works?
