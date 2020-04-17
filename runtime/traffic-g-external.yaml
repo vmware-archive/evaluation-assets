@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: svc3
-  namespace: octarine
+  namespace: octarine-testplan
   labels:
     app: svc3
 spec:
@@ -39,7 +39,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: svc3
-  namespace: octarine
+  namespace: octarine-testplan
   labels:
     app.kubernetes.io/selector: octarine_traffic_generator
 spec:
