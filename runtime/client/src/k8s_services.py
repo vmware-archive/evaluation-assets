@@ -2,12 +2,12 @@ import get_config as cfg
 from svc_instance import SvcInstance
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
-#from pprint import pprint
 
 
 class Services():
     def __init__(self):
         config.load_incluster_config()
+        # Un-check to use locally
         # config.load_kube_config()
         self.namespace = cfg.namespace()
         self.label = cfg.label()
