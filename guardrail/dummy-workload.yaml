@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dummy-workload
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dummy-workload
+  template:
+    metadata:
+      labels:
+        app: dummy-workload
+    spec:
+      hostNetwork: true
+      containers:
+        - name: echo
+          image: busybox:latest
+          command:
+            - "sleep"
+            - "1000"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5002
+              name: httpport

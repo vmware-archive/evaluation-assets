@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svc3
+  namespace: octarine-testplan
+  labels:
+    app: svc3
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: svc3
+  template:
+    metadata:
+      labels:
+        app: svc3
+    spec:
+      serviceAccountName: octarine-service-list
+      containers:
+        - name: server
+          image: octarinesec/trafficg:server
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+              name: httpport
+        - name: client
+          image: octarinesec/trafficg:client
+          imagePullPolicy: Always
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: EGRESS_ENABLED
+              value: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc3
+  namespace: octarine-testplan
+  labels:
+    app.kubernetes.io/selector: octarine_traffic_generator
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 5000
+  selector:
+    app: svc3
